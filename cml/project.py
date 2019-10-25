@@ -23,7 +23,7 @@ class Project:
         """Check if the project has been initialized and is a valid cmake-init project"""
         return os.path.isfile(os.path.join(self.path, 'CMakeLists.txt'))
 
-    def initialize(self, dry=True):
+    def initialize(self, name, dry=True):
         """Initialize the cmake project"""
 
         # Abort if project has already been initialized

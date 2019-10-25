@@ -17,11 +17,14 @@ def ensure_dir(path, dry=True):
     Returns True if directory exists afterwards, else False.
     """
 
+    # Ignore call on dry-run
+    if dry:
+        return True
+
     # Create directory if necessary
     if not os.path.isdir(path):
         print('MKDIR {}'.format(path))
-        if not dry:
-            os.mkdir(path)
+        os.mkdir(path)
 
     # Check again if directory exists
     return os.path.isdir(path)
@@ -50,7 +53,7 @@ def apply_template(src, dst, dry=True):
                 shutil.copy(src_file, dst_file)
 
             # Ensure file exists
-            if not os.path.isfile(dst_file):
+            if not dry and not os.path.isfile(dst_file):
                 return False
         elif os.path.isdir(src_file):
             # Recurse into subdirectory

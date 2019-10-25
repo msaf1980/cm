@@ -19,7 +19,7 @@ def ensure_dir(path, dry=True):
 
     # Create directory if necessary
     if not os.path.isdir(path):
-        print('MKDIR ' + path)
+        print('MKDIR {}'.format(path))
         if not dry:
             os.mkdir(path)
 
@@ -45,7 +45,7 @@ def apply_template(src, dst, dry=True):
         # Check if this is a file or a directory
         if os.path.isfile(src_file):
             # Copy file
-            print('GENERATE ' + dst_file)
+            print('GENERATE {}'.format(dst_file))
             if not dry:
                 shutil.copy(src_file, dst_file)
 

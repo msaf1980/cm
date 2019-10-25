@@ -6,9 +6,9 @@ import unittest
 class UtilsTest(unittest.TestCase):
     """Test cases for cml.utils."""
 
-    def test_thoughts(self):
-        utils = cml.Utils()
-        self.assertEquals(utils.f(), 'hello world')
+    def test_paths(self):
+        self.assertIsNotNone(cml.utils.script_dir())
+        self.assertIsNotNone(cml.utils.data_dir())
 
 
 if __name__ == '__main__':

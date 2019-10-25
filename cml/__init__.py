@@ -1,7 +1,7 @@
 from .core import hmm
 from .core import get_hmm
 
-from .utils import Utils
+from . import utils
 
 from .cmake import CMakeParser
 

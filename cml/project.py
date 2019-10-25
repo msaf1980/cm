@@ -32,11 +32,12 @@ class Project:
             return False
 
         # Copy project template
-        utils.apply_template(os.path.join(utils.data_dir(), 'templates/core'), self.path, dry)
+        if not utils.apply_template(os.path.join(utils.data_dir(), 'templates/core'), self.path, dry):
+            print('Could not initialize project.')
+            return False
 
-        #for (dir, subdir, files) in os.walk():
-        #    print('Found directory: %s' % dir)
-        #    for filename in files:
-        #        print('\t%s' % filename)
+        # Rescan project
+        self.scan()
 
-        # [TODO]
+        # Done
+        return True

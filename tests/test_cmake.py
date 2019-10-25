@@ -6,7 +6,7 @@ import unittest
 class CMakeTest(unittest.TestCase):
     """Test cases for cml.cmake."""
 
-    def test_thoughts(self):
+    def test_cmake(self):
         parser = cml.CMakeParser()
         self.assertEquals(parser.f(), 'hello world')
 

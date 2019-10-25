@@ -6,7 +6,7 @@ import unittest
 class DoxygenTest(unittest.TestCase):
     """Test cases for cml.doxygen."""
 
-    def test_thoughts(self):
+    def test_doxygen(self):
         parser = cml.DoxygenParser()
         self.assertEquals(parser.f(), 'hello world')
 

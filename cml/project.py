@@ -1,6 +1,6 @@
 import os
 
-from .. import utils
+from . import utils
 
 
 class Project:

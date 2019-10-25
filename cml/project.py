@@ -1,6 +1,7 @@
 import os
 
 from . import utils
+from . import CMakeParser
 
 
 class Project:
@@ -13,7 +14,8 @@ class Project:
 
     def scan(self):
         """Scan the project files"""
-        self.entries = os.listdir(self.path)
+        cmake_file = CMakeParser()
+        cmake_file.parse(os.path.join(self.path, 'CMakeLists.txt'))
 
     def exists(self):
         """Check if the project directory exists"""

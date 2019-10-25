@@ -5,7 +5,6 @@ Welcome to cm's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
 Indices and tables
 ==================
 
@@ -13,15 +12,26 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+cml::utils
+==========
 
-cmake_parser::core
-==================
-
-.. automodule:: cmake_parser.core
+.. automodule:: cml.utils
    :members:
 
-cmake_parser::helpers
-=====================
+cml::cmake
+==========
 
-.. automodule:: cmake_parser.helpers
+.. automodule:: cml.cmake
+   :members:
+
+cml::doxygen
+==========
+
+.. automodule:: cml.doxygen
+   :members:
+
+cml::project
+============
+
+.. automodule:: cml.project
    :members:

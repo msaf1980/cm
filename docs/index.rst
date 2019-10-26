@@ -12,6 +12,24 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+cml::cmake_file
+===============
+
+.. automodule:: cml.cmake_file
+   :members:
+
+cml::cmake_parser
+=================
+
+.. automodule:: cml.cmake_parser
+   :members:
+
+cml::doxygen_parser
+===================
+
+.. automodule:: cml.doxygen_parser
+   :members:
+
 cml::project
 ============
 

@@ -1,3 +1,5 @@
+import os
+
 from enum import Enum
 
 
@@ -22,6 +24,7 @@ class CMakeParser:
 
     def __init__(self):
         """Default Constructor"""
+        self.tokens = []
 
     def load(self, path):
         """Load cmake file"""
@@ -31,12 +34,16 @@ class CMakeParser:
     def tokenize(self, path):
         """Parse cmake file into list of tokens"""
 
-        # Tokenizer configuration
-        whitespace = [ ' ', '\t' ]
-        special = [ '(', ')' ]
+        # Check if file exists
+        if not os.path.isfile(path):
+            return False
 
         # Open file
         f = open(path)
+
+        # Tokenizer configuration
+        whitespace = [ ' ', '\t' ]
+        special = [ '(', ')' ]
 
         # Tokenize stream
         self.tokens = []
@@ -216,18 +223,20 @@ class CMakeParser:
                         return False
 
     def found_command(self, tokens):
-        print('CMD:')
-        for (token_type, token) in tokens:
-            if token_type in [ TokenType.DEFAULT, TokenType.STRING, TokenType.SPECIAL_CHAR ]:
-                print('- {}'.format(token))
-        print('')
+        return
+        #print('CMD:')
+        #for (token_type, token) in tokens:
+        #    if token_type in [ TokenType.DEFAULT, TokenType.STRING, TokenType.SPECIAL_CHAR ]:
+        #        print('- {}'.format(token))
+        #print('')
 
     def found_comment(self, tokens):
-        print('CMT: ', end = '')
-        for (token_type, token) in tokens:
-            if token_type == TokenType.COMMENT:
-                print(token, end = '')
-        print('')
+        return
+        #print('CMT: ', end = '')
+        #for (token_type, token) in tokens:
+        #    if token_type == TokenType.COMMENT:
+        #        print(token, end = '')
+        #print('')
 
     def found_whitespace(self, tokens):
         return

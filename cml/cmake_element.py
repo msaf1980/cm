@@ -1,4 +1,5 @@
 import os
+import sys
 
 from .cmake import ElementType
 
@@ -17,3 +18,7 @@ class CMakeElement:
 
     def print(self):
         """Print element to terminal"""
+        self.write(sys.stdout)
+
+    def write(self, stream):
+        """Print element to stream"""

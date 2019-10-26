@@ -12,11 +12,8 @@ class CMakeCommand(CMakeElement):
         super().__init__(ElementType.COMMAND)
         self.tokens = tokens
 
-    def print(self):
-        """Print element to terminal"""
+    def write(self, stream):
+        """Print element to stream"""
 
-        print('CMD:')
-        for (token_type, token) in self.tokens:
-            if token_type in [ TokenType.DEFAULT, TokenType.STRING, TokenType.SPECIAL_CHAR ]:
-                print('- {}'.format(token))
-        print('')
+        for (_, token) in self.tokens:
+            stream.write(token)

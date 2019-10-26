@@ -12,7 +12,8 @@ class CMakeWhitespace(CMakeElement):
         super().__init__(ElementType.WHITESPACE)
         self.tokens = tokens
 
-    def print(self):
-        """Print element to terminal"""
+    def write(self, stream):
+        """Print element to stream"""
 
-        print('WS\n')
+        for (_, token) in self.tokens:
+            stream.write(token)

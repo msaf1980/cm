@@ -12,11 +12,8 @@ class CMakeComment(CMakeElement):
         super().__init__(ElementType.COMMENT)
         self.tokens = tokens
 
-    def print(self):
-        """Print element to terminal"""
+    def write(self, stream):
+        """Print element to stream"""
 
-        print('CMT:')
-        for (token_type, token) in self.tokens:
-            if token_type == TokenType.COMMENT:
-                print(token)
-        print('')
+        for (_, token) in self.tokens:
+            stream.write(token)

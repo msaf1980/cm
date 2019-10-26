@@ -14,6 +14,23 @@ class CMakeFile:
         """Add element to file"""
         self.elements.append(element)
 
+    def save(self, path):
+        """Save file back to disk"""
+
+        try:
+            # Open file
+            f = open(path, 'w')
+
+            # Write elements to file
+            for element in self.elements:
+                element.write(f)
+
+            # Done
+            return True
+        except:
+            # Error
+            return False
+
     def print(self):
         """Print content of cmake file to terminal"""
         for element in self.elements:

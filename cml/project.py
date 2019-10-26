@@ -30,6 +30,7 @@ class Project:
         # [DEBUG] Print content of cmake file
         if cmake_file != None:
             cmake_file.print()
+            cmake_file.save('CMakeLists2.txt')
 
     def is_valid(self):
         """Check if the project is a valid cmake_init project"""

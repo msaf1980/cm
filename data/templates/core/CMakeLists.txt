@@ -184,8 +184,6 @@ endif()
 # 
 
 add_subdirectory(source)
-add_subdirectory(docs)
-add_subdirectory(deploy)
 
 
 # 

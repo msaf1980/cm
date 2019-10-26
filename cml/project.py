@@ -20,30 +20,32 @@ class Project:
     def scan(self):
         """Scan the project files"""
 
-        # Create cmake parser
-        parser = CMakeParser()
+        # Reset data
+        self.cmake_file = None
 
         # Parse main cmake file
+        parser = CMakeParser()
         cmake_file = parser.load(os.path.join(self.path, 'CMakeLists.txt'))
 
         # [DEBUG] Print content of cmake file
         if cmake_file != None:
             cmake_file.print()
 
-    def exists(self):
-        """Check if the project directory exists"""
-        return os.path.isdir(self.path)
-
-    def is_initialized(self):
-        """Check if the project has been initialized and is a valid cmake-init project"""
-        return os.path.isfile(os.path.join(self.path, 'CMakeLists.txt'))
+    def is_valid(self):
+        """Check if the project is a valid cmake_init project"""
+        return self.cmake_file != None
 
     def initialize(self, name, dry=True):
         """Initialize the cmake project"""
 
-        # Abort if project has already been initialized
-        if self.is_initialized():
-            print('Project is already initialized.')
+        # Create directory if necessary
+        if not utils.ensure_dir(self.path):
+            print('Could not create directory "{}".'.format(self.path))
+            return False
+
+        # Abort if directory is not empty
+        if not utils.dir_empty(self.path):
+            print('Directory "{}" is not empty.'.format(self.path))
             return False
 
         # Copy project template

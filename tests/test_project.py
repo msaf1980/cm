@@ -9,8 +9,7 @@ class ProjectTest(unittest.TestCase):
     def test_project(self):
         project = cml.Project(cml.utils.data_dir())
         self.assertEquals(project.path, cml.utils.data_dir())
-        self.assertTrue(project.exists())
-        self.assertFalse(project.is_initialized())
+        self.assertFalse(project.is_valid())
 
 
 if __name__ == '__main__':

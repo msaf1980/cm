@@ -11,6 +11,16 @@ def data_dir():
     """Get path to cm's data directory."""
     return path.realpath(path.join(path.dirname(__file__), '../data/'))
 
+def dir_empty(path):
+    """Check if directory is empty.
+    
+    Returns True if directory exists and is empty, else False.
+    """
+    if os.path.exists(path) and os.path.isdir(path):
+        return not os.listdir(path)
+    else:
+        return False
+
 def ensure_dir(path, dry=True):
     """Check if a directory exists and create it if necessary.
 

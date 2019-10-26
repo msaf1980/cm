@@ -9,13 +9,24 @@ class Project:
 
     def __init__(self, path=None):
         """Default Constructor"""
-        self.path = path or '.'
+
+        # Initialize data
+        self.path = path or '.' # Path to project directory
+        self.cmake_file = None  # The main cmake file
+
+        # Scan project directory
         self.scan()
 
     def scan(self):
         """Scan the project files"""
+
+        # Create cmake parser
         parser = CMakeParser()
+
+        # Parse main cmake file
         cmake_file = parser.load(os.path.join(self.path, 'CMakeLists.txt'))
+
+        # [DEBUG] Print content of cmake file
         if cmake_file != None:
             cmake_file.print()
 

@@ -12,18 +12,18 @@ class CMakeParser:
 
     def __init__(self):
         """Default Constructor"""
-        self.tokens = []
 
     def load(self, path):
         """Load cmake file"""
 
         # Tokenize cmake file
-        if not self.tokenize(path):
+        tokens = self.tokenize(path)
+        if tokens == None:
             return None
 
         # Parse structure of cmake file
-        cmake_file = CMakeFile(path)
-        if not self.parse_structure(cmake_file):
+        cmake_file = self.parse_structure(path, tokens)
+        if cmake_file == None:
             return None
 
         # Done
@@ -34,7 +34,7 @@ class CMakeParser:
 
         # Check if file exists
         if not os.path.isfile(path):
-            return False
+            return None
 
         # Open file
         f = open(path)
@@ -44,7 +44,7 @@ class CMakeParser:
         special = [ '(', ')' ]
 
         # Tokenize stream
-        self.tokens = []
+        tokens = []
         token = ''
         mode = TokenType.DEFAULT
         escape_code = False
@@ -112,7 +112,7 @@ class CMakeParser:
             # Finish old word if mode has changed
             if mode != next_mode:
                 if len(token) > 0:
-                    self.tokens.append((mode, token))
+                    tokens.append((mode, token))
                 token = ''
 
             # Stop on EOF
@@ -125,7 +125,7 @@ class CMakeParser:
             # End EOL and SPECIAL_CHAR modes right away
             if mode == TokenType.EOL or mode == TokenType.SPECIAL_CHAR:
                 # Add token
-                self.tokens.append((mode, c))
+                tokens.append((mode, c))
                 token = ''
 
                 # Switch to default mode
@@ -135,10 +135,13 @@ class CMakeParser:
                 token += c
 
         # Done parsing
-        return True
+        return tokens
 
-    def parse_structure(self, cmake_file):
+    def parse_structure(self, path, tokens):
         """Parse structure of cmake file after loading"""
+
+        # Create object
+        cmake_file = CMakeFile(path)
 
         # Type of the current element
         element = ElementType.WHITESPACE
@@ -148,7 +151,7 @@ class CMakeParser:
         current = []
 
         # Parse tokens
-        for (token_type, token) in self.tokens:
+        for (token_type, token) in tokens:
             # Take token
             current.append((token_type, token))
 
@@ -171,7 +174,7 @@ class CMakeParser:
                     current = []
                 elif token_type != TokenType.WHITESPACE:
                     # Syntax error
-                    return False
+                    return None
 
             # If we are parsing a comment:
             elif element == ElementType.COMMENT:
@@ -185,7 +188,7 @@ class CMakeParser:
                     current = []
                 elif token_type != TokenType.COMMENT and token_type != TokenType.WHITESPACE:
                     # Syntax error
-                    return False
+                    return None
 
             # If we are parsing a command:
             elif element == ElementType.COMMAND:
@@ -197,7 +200,7 @@ class CMakeParser:
                         command_status = 1
                     elif token_type != TokenType.WHITESPACE:
                         # Syntax error
-                        return False
+                        return None
 
                 # <command_name> '(' ...
                 elif command_status == 1:
@@ -207,7 +210,7 @@ class CMakeParser:
                         command_status = 2
                     elif token_type == TokenType.SPECIAL_CHAR and token == '(':
                         # Syntax error
-                        return False
+                        return None
 
                 # <command_name> '(' ... ')'
                 elif command_status == 2:
@@ -221,15 +224,7 @@ class CMakeParser:
                         current = []
                     elif not token_type in [ TokenType.WHITESPACE, TokenType.COMMENT ]:
                         # Syntax error
-                        return False
+                        return None
 
         # Done parsing
-        return True
-
-    def print(self):
-        """Print structure of cmake to terminal"""
-
-        # Display parsed tokens
-        for (token_type, token) in self.tokens:
-            if token_type in [ TokenType.DEFAULT, TokenType.STRING, TokenType.SPECIAL_CHAR ]:
-                print('- ' + token)
+        return cmake_file

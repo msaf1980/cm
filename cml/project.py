@@ -14,9 +14,10 @@ class Project:
 
     def scan(self):
         """Scan the project files"""
-        cmake_file = CMakeParser()
-        cmake_file.load(os.path.join(self.path, 'CMakeLists.txt'))
-        #cmake_file.print()
+        parser = CMakeParser()
+        cmake_file = parser.load(os.path.join(self.path, 'CMakeLists.txt'))
+        if cmake_file != None:
+            cmake_file.print()
 
     def exists(self):
         """Check if the project directory exists"""

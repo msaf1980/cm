@@ -1,23 +1,11 @@
 import os
 
-from enum import Enum
+from .cmake import ElementType, TokenType
+from .cmake_file import CMakeFile
+from .cmake_command import CMakeCommand
+from .cmake_comment import CMakeComment
+from .cmake_whitespace import CMakeWhitespace
 
-
-class TokenType(Enum):
-    """Type of token"""
-    DEFAULT = 1
-    WHITESPACE = 2
-    COMMENT = 3
-    STRING = 4
-    SPECIAL_CHAR = 5
-    EOL = 6
-    EOF = 7
-
-class ElementType(Enum):
-    """Type of structurel element"""
-    UNKNOWN = 0
-    COMMAND = 1
-    COMMENT = 2
 
 class CMakeParser:
     """A parser for cmake files"""
@@ -28,8 +16,18 @@ class CMakeParser:
 
     def load(self, path):
         """Load cmake file"""
-        self.tokenize(path)
-        self.parse_structure()
+
+        # Tokenize cmake file
+        if not self.tokenize(path):
+            return None
+
+        # Parse structure of cmake file
+        cmake_file = CMakeFile(path)
+        if not self.parse_structure(cmake_file):
+            return None
+
+        # Done
+        return cmake_file
 
     def tokenize(self, path):
         """Parse cmake file into list of tokens"""
@@ -136,11 +134,14 @@ class CMakeParser:
                 # Add character to word
                 token += c
 
-    def parse_structure(self):
+        # Done parsing
+        return True
+
+    def parse_structure(self, cmake_file):
         """Parse structure of cmake file after loading"""
 
         # Type of the current element
-        element = ElementType.UNKNOWN
+        element = ElementType.WHITESPACE
         command_status = 0
 
         # Tokens that belong to the current element
@@ -152,7 +153,7 @@ class CMakeParser:
             current.append((token_type, token))
 
             # If we don't know what we are parsing, yet:
-            if element == ElementType.UNKNOWN:
+            if element == ElementType.WHITESPACE:
                 # Determine type of element (if possible)
                 if token_type == TokenType.DEFAULT:
                     # We are parsing a command
@@ -163,10 +164,10 @@ class CMakeParser:
                     element = ElementType.COMMENT
                 elif token_type == TokenType.EOL:
                     # We got an EOL and only whitespace before
-                    self.found_whitespace(current)
+                    cmake_file.add(CMakeWhitespace(current))
 
                     # Start next element
-                    element = ElementType.UNKNOWN
+                    element = ElementType.WHITESPACE
                     current = []
                 elif token_type != TokenType.WHITESPACE:
                     # Syntax error
@@ -177,10 +178,10 @@ class CMakeParser:
                 # Only accept more comments and whitespace
                 if token_type == TokenType.EOL:
                     # End comment
-                    self.found_comment(current)
+                    cmake_file.add(CMakeComment(current))
 
                     # Start next element
-                    element = ElementType.UNKNOWN
+                    element = ElementType.WHITESPACE
                     current = []
                 elif token_type != TokenType.COMMENT and token_type != TokenType.WHITESPACE:
                     # Syntax error
@@ -213,33 +214,17 @@ class CMakeParser:
                     # Expect only whitespace, comments, or newline from now on
                     if token_type == TokenType.EOL:
                         # End command
-                        self.found_command(current)
+                        cmake_file.add(CMakeCommand(current))
 
                         # Start next element
-                        element = ElementType.UNKNOWN
+                        element = ElementType.WHITESPACE
                         current = []
                     elif not token_type in [ TokenType.WHITESPACE, TokenType.COMMENT ]:
                         # Syntax error
                         return False
 
-    def found_command(self, tokens):
-        return
-        #print('CMD:')
-        #for (token_type, token) in tokens:
-        #    if token_type in [ TokenType.DEFAULT, TokenType.STRING, TokenType.SPECIAL_CHAR ]:
-        #        print('- {}'.format(token))
-        #print('')
-
-    def found_comment(self, tokens):
-        return
-        #print('CMT: ', end = '')
-        #for (token_type, token) in tokens:
-        #    if token_type == TokenType.COMMENT:
-        #        print(token, end = '')
-        #print('')
-
-    def found_whitespace(self, tokens):
-        return
+        # Done parsing
+        return True
 
     def print(self):
         """Print structure of cmake to terminal"""

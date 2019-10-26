@@ -25,12 +25,7 @@ class Project:
 
         # Parse main cmake file
         parser = CMakeParser()
-        cmake_file = parser.load(os.path.join(self.path, 'CMakeLists.txt'))
-
-        # [DEBUG] Print content of cmake file
-        if cmake_file != None:
-            cmake_file.print()
-            cmake_file.save('CMakeLists2.txt')
+        self.cmake_file = parser.load(os.path.join(self.path, 'CMakeLists.txt'))
 
     def is_valid(self):
         """Check if the project is a valid cmake_init project"""
@@ -59,3 +54,15 @@ class Project:
 
         # Done
         return True
+
+    def test_cmd(self):
+        """Execute test operation (for development)"""
+
+        self.cmake_file.set_command_arg([ 'set', 'META_PROJECT_NAME' ], 1, '"test"')
+
+        cmd = self.cmake_file.find_commands([ 'add_subdirectory' ])[0]
+        self.cmake_file.add_command([ 'found', 'here' ], before=cmd)
+        self.cmake_file.add_command([ 'found', 'here' ], after=cmd)
+        self.cmake_file.add_command([ 'found', 'here' ])
+
+        self.cmake_file.save()

@@ -22,6 +22,10 @@ sub_parser.add_argument('-d', '--dry-run', help='Do not modify project on disk',
 sub_parser.add_argument('type', help='Project type (lib, app, doc)')
 sub_parser.add_argument('name', help='Project name')
 
+# Command 'test'
+# [TODO] Remove
+sub_parser = subparsers.add_parser('test', aliases=['i'], help='Execute test operation')
+
 # Create project
 project = Project()
 dry_run = True
@@ -34,3 +38,5 @@ if args.command == 'init' or args.command == 'i':
     project.initialize(args.name, args.dry_run)
 elif args.command == 'generate' or args.command == 'g':
     print('Generate project {} ({})'.format(args.name, args.type))
+elif args.command == 'test':
+    project.test_cmd()

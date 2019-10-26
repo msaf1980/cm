@@ -16,6 +16,18 @@ class CMakeElement:
         """Get type of element"""
         return self.element_type
 
+    def is_command(self):
+        """Check if element is a command"""
+        return self.element_type == ElementType.COMMAND
+
+    def is_comment(self):
+        """Check if element is a comment"""
+        return self.element_type == ElementType.COMMENT
+
+    def is_whitespace(self):
+        """Check if element is whitespace"""
+        return self.element_type == ElementType.WHITESPACE
+
     def print(self):
         """Print element to terminal"""
         self.write(sys.stdout)

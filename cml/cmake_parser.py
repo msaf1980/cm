@@ -153,7 +153,7 @@ class CMakeParser:
         # Parse tokens
         for (token_type, token) in tokens:
             # Take token
-            current.append((token_type, token))
+            current.append([token_type, token])
 
             # If we don't know what we are parsing, yet:
             if element == ElementType.WHITESPACE:

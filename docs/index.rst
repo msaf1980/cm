@@ -54,12 +54,6 @@ cml::cmake_whitespace
 .. automodule:: cml.cmake_whitespace
    :members:
 
-cml::doxygen_parser
-===================
-
-.. automodule:: cml.doxygen_parser
-   :members:
-
 cml::project
 ============
 

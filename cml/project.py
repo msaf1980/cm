@@ -215,11 +215,13 @@ class Project:
             # Replace values in source files
             utils.replace_in_file(header_dst, [
                 ( 'proj_name', self.project_name ),
+                ( 'PROJ_NAME', self.project_name.upper() ),
                 ( 'lib_name', name ),
                 ( 'LIB_NAME', name.upper() )
             ], dry)
             utils.replace_in_file(impl_dst, [
                 ( 'proj_name', self.project_name ),
+                ( 'PROJ_NAME', self.project_name.upper() ),
                 ( 'lib_name', name ),
                 ( 'LIB_NAME', name.upper() )
             ], dry)
@@ -252,6 +254,36 @@ class Project:
             print('Please specify a name')
             return False
 
-        # [TODO] Generate executable
-        print('Generating executable \'{}\''.format(name))
+        # Copy library template
+        dst_dir = os.path.join(self.path, 'source', name)
+        if not utils.copy_template(os.path.join(utils.data_dir(), 'templates/executable'), dst_dir, dry):
+            print('Could not generate executable.')
+            return False
+
+        if not dry:
+            # Get important file names
+            main_cpp = os.path.join(dst_dir, 'main.cpp')
+            cmake_lists = os.path.join(dst_dir, 'CMakeLists.txt')
+
+            # Replace values in source files
+            utils.replace_in_file(main_cpp, [
+                ( 'proj_name', self.project_name ),
+                ( 'PROJ_NAME', self.project_name.upper() )
+            ], dry)
+
+            # Replace values in cmake file
+            parser = CMakeParser()
+            cmake_file = parser.load(cmake_lists)
+            if cmake_file:
+                cmake_file.set_command_arg([ 'set', 'target' ], 1, name)
+                cmake_file.save()
+
+            # Add project to main cmake file
+            if self.cmake_file_source:
+                marker = self.cmake_file_source.find_commands([ 'set', 'IDE_FOLDER', '"Executables"'])
+                if len(marker) > 0:
+                    self.cmake_file_source.add_command([ 'add_subdirectory', name ], after=marker[0])
+                    self.cmake_file_source.save()
+
+        # Done
         return True

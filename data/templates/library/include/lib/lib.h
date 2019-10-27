@@ -13,7 +13,7 @@ namespace ${lib_name}
 *  @brief
 *    Print version
 */
-${LIB_NAME}_API void version();
+${LIB_NAME}_API void print_version();
 
 
 } // namespace ${lib_name}

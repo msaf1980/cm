@@ -11,7 +11,7 @@
 # 
 
 # Target name
-set(target fibcmd)
+set(target executable)
 
 # Exit here if required dependencies are not met
 message(STATUS "Example ${target}")
@@ -69,8 +69,7 @@ target_include_directories(${target}
 target_link_libraries(${target}
     PRIVATE
     ${DEFAULT_LIBRARIES}
-    ${META_PROJECT_NAME}::baselib
-    ${META_PROJECT_NAME}::fiblib
+    # ${META_PROJECT_NAME}::libname
 )
 
 

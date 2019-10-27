@@ -10,9 +10,10 @@ namespace ${lib_name}
 {
 
 
-void version()
+void print_version()
 {
-    std::cout << "Hello World." << std::endl;
+    std::cout << "Version: " << ${PROJ_NAME}_VERSION << std::endl;
+    std::cout << std::endl;
 }
 
 

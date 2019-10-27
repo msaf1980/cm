@@ -197,6 +197,7 @@ class Project:
             print('Could not generate library.')
             return False
 
+        # Adjust files
         if not dry:
             # Get important file names
             include_dir_src = os.path.join(dst_dir, 'include', 'lib')
@@ -218,13 +219,13 @@ class Project:
                 ( 'PROJ_NAME', self.project_name.upper() ),
                 ( 'lib_name', name ),
                 ( 'LIB_NAME', name.upper() )
-            ], dry)
+            ])
             utils.replace_in_file(impl_dst, [
                 ( 'proj_name', self.project_name ),
                 ( 'PROJ_NAME', self.project_name.upper() ),
                 ( 'lib_name', name ),
                 ( 'LIB_NAME', name.upper() )
-            ], dry)
+            ])
 
             # Replace values in cmake file
             parser = CMakeParser()
@@ -235,7 +236,7 @@ class Project:
                 main_cmake.set_command_arg([ 'set', 'sources' ], 1, '${source_path}/' + name + '.cpp')
                 main_cmake.save()
 
-            # Add project to main cmake file
+            # Add project to sources-cmake file
             if self.source_cmake:
                 marker = self.source_cmake.find_commands([ 'set', 'IDE_FOLDER', '""'])
                 if len(marker) > 0:
@@ -254,12 +255,13 @@ class Project:
             print('Please specify a name')
             return False
 
-        # Copy library template
+        # Copy executable template
         dst_dir = os.path.join(self.path, 'source', name)
         if not utils.copy_template(os.path.join(utils.data_dir(), 'templates/executable'), dst_dir, dry):
             print('Could not generate executable.')
             return False
 
+        # Adjust files
         if not dry:
             # Get important file names
             main_cpp = os.path.join(dst_dir, 'main.cpp')
@@ -269,7 +271,7 @@ class Project:
             utils.replace_in_file(main_cpp, [
                 ( 'proj_name', self.project_name ),
                 ( 'PROJ_NAME', self.project_name.upper() )
-            ], dry)
+            ])
 
             # Replace values in cmake file
             parser = CMakeParser()
@@ -278,11 +280,38 @@ class Project:
                 main_cmake.set_command_arg([ 'set', 'target' ], 1, name)
                 main_cmake.save()
 
-            # Add project to main cmake file
+            # Add project to sources-cmake file
             if self.source_cmake:
                 marker = self.source_cmake.find_commands([ 'set', 'IDE_FOLDER', '"Executables"'])
                 if len(marker) > 0:
                     self.source_cmake.add_command([ 'add_subdirectory', name ], after=marker[0])
+                    self.source_cmake.save()
+
+        # Done
+        return True
+
+    def remove_subproject(self, name, dry=True):
+        """Remove sub-project"""
+
+        # Check name
+        if not name:
+            # Invalid name
+            print('Please specify a name')
+            return False
+
+        # Remove directory
+        dir = os.path.join(self.path, 'source', name)
+        if not utils.remove_subdirectory(dir, dry):
+            print('Could not remove sub-project.')
+            return False
+
+        # Adjust cmake files
+        if not dry:
+            # Remove project from sources-cmake file
+            if self.source_cmake:
+                marker = self.source_cmake.find_commands([ 'add_subdirectory', name ])
+                if len(marker) > 0:
+                    self.source_cmake.remove_command(marker[0])
                     self.source_cmake.save()
 
         # Done

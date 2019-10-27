@@ -87,3 +87,9 @@ class CMakeFile:
             self.elements.insert(self.elements.index(after) + 1, command)
         else:
             self.elements.append(command)
+
+    def remove_command(self, cmd):
+        """Remove command from cmake file"""
+
+        # Remove command
+        self.elements.remove(cmd)

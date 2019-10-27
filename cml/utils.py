@@ -73,7 +73,41 @@ def copy_template(src, dst, dry=True):
     # Done
     return True
 
-def replace_in_file(path, variables, dry=True):
+def remove_subdirectory(path, dry=True):
+    """Remove sub-directory recursively"""
+
+    # Ensure that destination directory exists
+    if not os.path.isdir(path):
+        return False
+
+    # List files and directories
+    entries = os.listdir(path)
+
+    # Process files and directories
+    for entry in entries:
+        # Get source and destination path
+        sub_path = os.path.join(path, entry)
+
+        # Check if this is a file or a directory
+        if os.path.isfile(sub_path):
+            # Copy file
+            print('RM {}'.format(sub_path))
+            if not dry:
+                os.remove(sub_path)
+        elif os.path.isdir(sub_path):
+            # Recurse into subdirectory
+            if not remove_subdirectory(sub_path, dry):
+                return False
+
+    # Remove directory
+    print('RMDIR {}'.format(path))
+    if not dry:
+        os.rmdir(path)
+
+    # Done
+    return True
+
+def replace_in_file(path, variables):
     """Replace variables in a file"""
 
     try:

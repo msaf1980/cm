@@ -37,6 +37,11 @@ sub_parser.add_argument('-d', '--dry-run', help='Do not modify project on disk',
 sub_parser.add_argument('type', help='Project type (lib, app, doc)')
 sub_parser.add_argument('name', help='Project name')
 
+# Command 'remove'
+sub_parser = subparsers.add_parser('remove', aliases=['rm'], help='Remove sub-project')
+sub_parser.add_argument('-d', '--dry-run', help='Do not modify project on disk', action='store_true')
+sub_parser.add_argument('name', help='Project name')
+
 # Create project
 project = Project()
 dry_run = True
@@ -69,3 +74,6 @@ elif args.command == 'generate' or args.command == 'g':
     else:
         # Invalid type
         print('Unknown type \'{}\''.format(args.type))
+elif args.command == 'remove' or args.command == 'rm':
+    # Remove sub-project
+    project.remove_subproject(name=args.name, dry=args.dry_run)

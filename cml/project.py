@@ -108,7 +108,8 @@ class Project:
         # Save cmake file
         self.cmake_file.save()
 
-    def initialize(self, name, dry=True):
+    def initialize(self, name=None, description=None, author_name=None, author_domain=None,
+                         author_maintainer=None, version=None, dry=True):
         """Initialize the cmake project"""
 
         # Create directory if necessary
@@ -121,6 +122,20 @@ class Project:
             print('Directory "{}" is not empty.'.format(self.path))
             return False
 
+        # Ask for missing information
+        if name == None:
+            name = self.query.ask('Project name', 'project')
+        if description == None:
+            description = self.query.ask('Project description', 'My new project')
+        if author_name == None:
+            author_name = self.query.ask('Author name', 'Unknown')
+        if author_domain == None:
+            author_domain = self.query.ask('Author domain', 'https://example.com')
+        if author_maintainer == None:
+            author_maintainer = self.query.ask('Maintainer email address', 'example@example.com')
+        if version == None:
+            version = self.query.ask('Version number', '1.0.0')
+
         # Copy project template
         if not utils.apply_template(os.path.join(utils.data_dir(), 'templates/core'), self.path, dry):
             print('Could not initialize project.')
@@ -128,6 +143,14 @@ class Project:
 
         # Rescan project
         self.scan()
+
+        # Update project information
+        self.set_prop('name', name)
+        self.set_prop('description', description)
+        self.set_prop('author_name', author_name)
+        self.set_prop('author_domain', author_domain)
+        self.set_prop('author_maintainer', author_maintainer)
+        self.set_prop('version', version)
 
         # Done
         return True

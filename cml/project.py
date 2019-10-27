@@ -15,8 +15,8 @@ class Project:
         # Initialize data
         self.path = path or '.' # Path to project directory
         self.query = query or UserQuery()
-        self.cmake_file = None  # The main cmake file
-        self.cmake_file_source = None  # The cmake file in source/
+        self.main_cmake = None  # The main cmake file
+        self.source_cmake = None  # The cmake file in source/
         self.project_name = '' # The name of the project
 
         # Scan project directory
@@ -26,31 +26,31 @@ class Project:
         """Scan the project files"""
 
         # Reset data
-        self.cmake_file = None
-        self.cmake_file_source = None
+        self.main_cmake = None
+        self.source_cmake = None
 
         # Parse main cmake file
         parser = CMakeParser()
-        self.cmake_file = parser.load(os.path.join(self.path, 'CMakeLists.txt'))
-        if self.cmake_file:
+        self.main_cmake = parser.load(os.path.join(self.path, 'CMakeLists.txt'))
+        if self.main_cmake:
             # Get project name
             self.project_name = self.get_prop('name')
 
         # Parse cmake file in source
-        self.cmake_file_source = parser.load(os.path.join(self.path, 'source', 'CMakeLists.txt'))
+        self.source_cmake = parser.load(os.path.join(self.path, 'source', 'CMakeLists.txt'))
 
     def is_valid(self):
         """Check if the project is a valid cmake_init project"""
 
         # Check if main cmake file exists
-        return self.cmake_file != None and self.cmake_file_source
+        return self.main_cmake != None and self.source_cmake
 
     def get_prop(self, prop):
         """Get property value"""
 
         # Helper function to get the parameter value of a cmake command
         def get_command_arg_value(signature, index):
-            cmds = self.cmake_file.find_commands(signature)
+            cmds = self.main_cmake.find_commands(signature)
             if len(cmds) == 1:
                 return cmds[0].get_arg_value(index)
             else:
@@ -87,7 +87,7 @@ class Project:
 
         # Helper function to set the parameter value of a cmake command
         def set_command_arg_value(signature, index, value):
-            cmds = self.cmake_file.find_commands(signature)
+            cmds = self.main_cmake.find_commands(signature)
             if len(cmds) == 1:
                 cmds[0].set_arg_value(index, value)
 
@@ -116,7 +116,7 @@ class Project:
                 set_command_arg_value([ 'set', 'META_VERSION_PATCH' ], 1, '"{}"'.format(values[2]))
 
         # Save cmake file
-        self.cmake_file.save()
+        self.main_cmake.save()
 
     def initialize(self, name=None, description=None, author_name=None, author_domain=None,
                          author_maintainer=None, version=None, dry=True):
@@ -228,19 +228,19 @@ class Project:
 
             # Replace values in cmake file
             parser = CMakeParser()
-            cmake_file = parser.load(cmake_lists)
-            if cmake_file:
-                cmake_file.set_command_arg([ 'set', 'target' ], 1, name)
-                cmake_file.set_command_arg([ 'set', 'headers' ], 1, '${include_path}/' + name + '.h')
-                cmake_file.set_command_arg([ 'set', 'sources' ], 1, '${source_path}/' + name + '.cpp')
-                cmake_file.save()
+            main_cmake = parser.load(cmake_lists)
+            if main_cmake:
+                main_cmake.set_command_arg([ 'set', 'target' ], 1, name)
+                main_cmake.set_command_arg([ 'set', 'headers' ], 1, '${include_path}/' + name + '.h')
+                main_cmake.set_command_arg([ 'set', 'sources' ], 1, '${source_path}/' + name + '.cpp')
+                main_cmake.save()
 
             # Add project to main cmake file
-            if self.cmake_file_source:
-                marker = self.cmake_file_source.find_commands([ 'set', 'IDE_FOLDER', '""'])
+            if self.source_cmake:
+                marker = self.source_cmake.find_commands([ 'set', 'IDE_FOLDER', '""'])
                 if len(marker) > 0:
-                    self.cmake_file_source.add_command([ 'add_subdirectory', name ], after=marker[0])
-                    self.cmake_file_source.save()
+                    self.source_cmake.add_command([ 'add_subdirectory', name ], after=marker[0])
+                    self.source_cmake.save()
 
         # Done
         return True
@@ -273,17 +273,17 @@ class Project:
 
             # Replace values in cmake file
             parser = CMakeParser()
-            cmake_file = parser.load(cmake_lists)
-            if cmake_file:
-                cmake_file.set_command_arg([ 'set', 'target' ], 1, name)
-                cmake_file.save()
+            main_cmake = parser.load(cmake_lists)
+            if main_cmake:
+                main_cmake.set_command_arg([ 'set', 'target' ], 1, name)
+                main_cmake.save()
 
             # Add project to main cmake file
-            if self.cmake_file_source:
-                marker = self.cmake_file_source.find_commands([ 'set', 'IDE_FOLDER', '"Executables"'])
+            if self.source_cmake:
+                marker = self.source_cmake.find_commands([ 'set', 'IDE_FOLDER', '"Executables"'])
                 if len(marker) > 0:
-                    self.cmake_file_source.add_command([ 'add_subdirectory', name ], after=marker[0])
-                    self.cmake_file_source.save()
+                    self.source_cmake.add_command([ 'add_subdirectory', name ], after=marker[0])
+                    self.source_cmake.save()
 
         # Done
         return True

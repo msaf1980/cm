@@ -11,7 +11,7 @@
 # 
 
 # Target name
-set(target baselib)
+set(target lib)
 
 # Exit here if required dependencies are not met
 message(STATUS "Lib ${target}")
@@ -33,11 +33,11 @@ set(include_path "${CMAKE_CURRENT_SOURCE_DIR}/include/${target}")
 set(source_path  "${CMAKE_CURRENT_SOURCE_DIR}/source")
 
 set(headers
-    ${include_path}/baselib.h
+    ${include_path}/lib.h
 )
 
 set(sources
-    ${source_path}/baselib.cpp
+    ${source_path}/lib.cpp
 )
 
 # Group source files

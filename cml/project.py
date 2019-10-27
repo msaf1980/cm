@@ -16,6 +16,8 @@ class Project:
         self.path = path or '.' # Path to project directory
         self.query = query or UserQuery()
         self.cmake_file = None  # The main cmake file
+        self.cmake_file_source = None  # The cmake file in source/
+        self.project_name = '' # The name of the project
 
         # Scan project directory
         self.scan()
@@ -25,16 +27,23 @@ class Project:
 
         # Reset data
         self.cmake_file = None
+        self.cmake_file_source = None
 
         # Parse main cmake file
         parser = CMakeParser()
         self.cmake_file = parser.load(os.path.join(self.path, 'CMakeLists.txt'))
+        if self.cmake_file:
+            # Get project name
+            self.project_name = self.get_prop('name')
+
+        # Parse cmake file in source
+        self.cmake_file_source = parser.load(os.path.join(self.path, 'source', 'CMakeLists.txt'))
 
     def is_valid(self):
         """Check if the project is a valid cmake_init project"""
 
         # Check if main cmake file exists
-        return self.cmake_file != None
+        return self.cmake_file != None and self.cmake_file_source
 
     def get_prop(self, prop):
         """Get property value"""
@@ -138,7 +147,7 @@ class Project:
             version = self.query.ask('Version number', '1.0.0')
 
         # Copy project template
-        if not utils.apply_template(os.path.join(utils.data_dir(), 'templates/core'), self.path, dry):
+        if not utils.copy_template(os.path.join(utils.data_dir(), 'templates/core'), self.path, dry):
             print('Could not initialize project.')
             return False
 
@@ -173,10 +182,76 @@ class Project:
         # Done
         return True
 
-    def test_cmd(self):
-        """Execute test command (for development)"""
+    def generate_library(self, name, dry=True):
+        """Generate library"""
 
-        # Ask the user some stupid questions
-        print(self.query.ask('Who are you?', 'John Doe'))
-        print(self.query.confirm('Are you sure?', True))
-        print(self.query.confirm('Are you certain?', False))
+        # Check name
+        if not name:
+            # Invalid name
+            print('Please specify a name')
+            return False
+
+        # Copy library template
+        dst_dir = os.path.join(self.path, 'source', name)
+        if not utils.copy_template(os.path.join(utils.data_dir(), 'templates/library'), dst_dir, dry):
+            print('Could not generate library.')
+            return False
+
+        if not dry:
+            # Get important file names
+            include_dir_src = os.path.join(dst_dir, 'include', 'lib')
+            include_dir_dst = os.path.join(dst_dir, 'include', name)
+            header_src = os.path.join(include_dir_dst, 'lib.h')
+            header_dst = os.path.join(include_dir_dst, name + '.h')
+            impl_src = os.path.join(dst_dir, 'source', 'lib.cpp')
+            impl_dst = os.path.join(dst_dir, 'source', name + '.cpp')
+            cmake_lists = os.path.join(dst_dir, 'CMakeLists.txt')
+
+            # Rename files
+            os.rename(include_dir_src, include_dir_dst)
+            os.rename(header_src, header_dst)
+            os.rename(impl_src, impl_dst)
+
+            # Replace values in source files
+            utils.replace_in_file(header_dst, [
+                ( 'proj_name', self.project_name ),
+                ( 'lib_name', name ),
+                ( 'LIB_NAME', name.upper() )
+            ], dry)
+            utils.replace_in_file(impl_dst, [
+                ( 'proj_name', self.project_name ),
+                ( 'lib_name', name ),
+                ( 'LIB_NAME', name.upper() )
+            ], dry)
+
+            # Replace values in cmake file
+            parser = CMakeParser()
+            cmake_file = parser.load(cmake_lists)
+            if cmake_file:
+                cmake_file.set_command_arg([ 'set', 'target' ], 1, name)
+                cmake_file.set_command_arg([ 'set', 'headers' ], 1, '${include_path}/' + name + '.h')
+                cmake_file.set_command_arg([ 'set', 'sources' ], 1, '${source_path}/' + name + '.cpp')
+                cmake_file.save()
+
+            # Add project to main cmake file
+            if self.cmake_file_source:
+                marker = self.cmake_file_source.find_commands([ 'set', 'IDE_FOLDER', '""'])
+                if len(marker) > 0:
+                    self.cmake_file_source.add_command([ 'add_subdirectory', name ], after=marker[0])
+                    self.cmake_file_source.save()
+
+        # Done
+        return True
+
+    def generate_executable(self, name, dry=True):
+        """Generate executable"""
+
+        # Check name
+        if not name:
+            # Invalid name
+            print('Please specify a name')
+            return False
+
+        # [TODO] Generate executable
+        print('Generating executable \'{}\''.format(name))
+        return True

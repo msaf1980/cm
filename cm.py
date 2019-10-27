@@ -37,10 +37,6 @@ sub_parser.add_argument('-d', '--dry-run', help='Do not modify project on disk',
 sub_parser.add_argument('type', help='Project type (lib, app, doc)')
 sub_parser.add_argument('name', help='Project name')
 
-# Command 'test'
-# [TODO] Remove
-sub_parser = subparsers.add_parser('test', aliases=['i'], help='Execute test operation')
-
 # Create project
 project = Project()
 dry_run = True
@@ -50,16 +46,26 @@ args = parser.parse_args()
 
 # Execute commands
 if args.command == 'get':
+    # Print property value
     value = project.get_prop(args.name)
     if value != None:
         print(value)
 if args.command == 'set':
+    # Set property value
     project.set_prop(args.name, args.value)
 elif args.command == 'init' or args.command == 'i':
+    # Initialize project
     project.initialize(name=args.name, description=args.description, author_name=args.author_name,
                        author_domain=args.author_domain, author_maintainer=args.author_maintainer,
                        version=args.version, dry=args.dry_run)
 elif args.command == 'generate' or args.command == 'g':
-    print('Generate project {} ({})'.format(args.name, args.type))
-elif args.command == 'test':
-    project.test_cmd()
+    # Check project type
+    if args.type in [ 'lib', 'l' ]:
+        # Generate library
+        project.generate_library(name=args.name, dry=args.dry_run)
+    elif args.type in [ 'exe', 'e' ]:
+        # Generate executable
+        project.generate_executable(name=args.name, dry=args.dry_run)
+    else:
+        # Invalid type
+        print('Unknown type \'{}\''.format(args.type))

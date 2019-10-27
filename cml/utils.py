@@ -39,7 +39,7 @@ def ensure_dir(path, dry=True):
     # Check again if directory exists
     return os.path.isdir(path)
 
-def apply_template(src, dst, dry=True):
+def copy_template(src, dst, dry=True):
     """Copy template from source to destination directory"""
 
     # Ensure that destination directory exists
@@ -67,8 +67,32 @@ def apply_template(src, dst, dry=True):
                 return False
         elif os.path.isdir(src_file):
             # Recurse into subdirectory
-            if not apply_template(src_file, dst_file, dry):
+            if not copy_template(src_file, dst_file, dry):
                 return False
 
     # Done
     return True
+
+def replace_in_file(path, variables, dry=True):
+    """Replace variables in a file"""
+
+    try:
+        # Read file content
+        f = open(path, 'r')
+        content = f.read()
+        f.close()
+
+        # Replace variables
+        for (key, value) in variables:
+            content = content.replace('${' + key + '}', value)
+
+        # Write back file
+        f = open(path, 'w')
+        f.write(content)
+        f.close()
+
+        # Done
+        return True
+    except:
+        # Error
+        return False

@@ -1,4 +1,5 @@
 import os
+import datetime
 
 from . import utils
 from .cmake_parser import CMakeParser
@@ -151,6 +152,23 @@ class Project:
         self.set_prop('author_domain', author_domain)
         self.set_prop('author_maintainer', author_maintainer)
         self.set_prop('version', version)
+
+        # Generate README.md
+        readme_file = open(os.path.join(self.path, 'README.md'), 'w')
+        readme_file.write('# {}\n'.format(name))
+        readme_file.write('\n')
+        readme_file.write('{}\n'.format(description))
+        readme_file.close()
+
+        # Generate LICENSE
+        license_file = open(os.path.join(self.path, 'LICENSE'), 'w')
+        license_file.write('Copyright (c) {} {}\n'.format(datetime.datetime.now().year, author_name))
+        license_file.close()
+
+        # Generate AUTHORS
+        authors_file = open(os.path.join(self.path, 'AUTHORS'), 'w')
+        authors_file.write('{} <{}>\n'.format(author_name, author_maintainer))
+        authors_file.close()
 
         # Done
         return True

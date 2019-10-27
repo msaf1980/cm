@@ -10,16 +10,31 @@ class CMakeFile:
     """Class that represents the contents of a CMakeLists.txt file"""
 
     def __init__(self, path):
-        """Constructor"""
+        """Constructor
+
+        Args:
+            path (string): Path to cmake file
+
+        """
         self.path = path
         self.elements = []
 
     def add(self, element):
-        """Add element to file"""
+        """Add element to file
+
+        Args:
+            element (CMakeElement): CMake element
+
+        """
         self.elements.append(element)
 
     def save(self, path = None):
-        """Save file back to disk"""
+        """Save file back to disk
+
+        Args:
+            path (string): Path to cmake file
+
+        """
 
         try:
             # Open file
@@ -41,7 +56,15 @@ class CMakeFile:
             element.print()
 
     def find_commands(self, signature):
-        """Find commands with a specific signature"""
+        """Find commands with a specific signature
+
+        Args:
+            signature (list): Command signature, e.g. [ 'SET', 'name' ]
+
+        Returns:
+            list: List of commands corresponding to the given signature (CMakeCommand)
+
+        """
 
         # Bail out if there is not even a name in the signature
         if len(signature) <= 0:
@@ -58,7 +81,14 @@ class CMakeFile:
         return cmds
 
     def set_command_arg(self, signature, index, value):
-        """Set argument of all commands that match a certain signature"""
+        """Set argument of all commands that match a certain signature
+
+        Args:
+            signature (list): Command signature, e.g. [ 'SET', 'name' ]
+            index (int): Index of argument to set
+            value (string): New value for the argument
+
+        """
 
         # Find commands
         cmds = self.find_commands(signature)
@@ -68,7 +98,14 @@ class CMakeFile:
             cmd.set_arg_value(index, value)
 
     def add_command(self, cmd, before = None, after = None):
-        """Add new command"""
+        """Add new command
+
+        Args:
+            cmd (list): New command signature, e.g. [ 'SET', 'name', 'value' ]
+            before (CMakeElement): Element before which to add the command
+            after (CMakeElement): Element after which to add the command
+
+        """
 
         # Create new command
         tokens = []
@@ -89,7 +126,12 @@ class CMakeFile:
             self.elements.append(command)
 
     def remove_command(self, cmd):
-        """Remove command from cmake file"""
+        """Remove command from cmake file
+
+        Args:
+            cmd (CMakeCommand): Command that shall be removed
+
+        """
 
         # Remove command
         self.elements.remove(cmd)

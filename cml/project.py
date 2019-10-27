@@ -10,7 +10,13 @@ class Project:
     """Class that represents a cmake project on the disk"""
 
     def __init__(self, path=None, query=None):
-        """Default Constructor"""
+        """Default Constructor
+        
+        Args:
+            path (string): Path to project directory
+            query (UserQuery): Query interface to interact with the user
+
+        """
 
         # Initialize data
         self.path = path or '.' # Path to project directory
@@ -40,13 +46,34 @@ class Project:
         self.source_cmake = parser.load(os.path.join(self.path, 'source', 'CMakeLists.txt'))
 
     def is_valid(self):
-        """Check if the project is a valid cmake_init project"""
+        """Check if the project is a valid cmake_init project
+
+        Returns:
+            Boolean: True if project path contains a valid project, else False
+
+        """
 
         # Check if main cmake file exists
         return self.main_cmake != None and self.source_cmake
 
     def get_prop(self, prop):
-        """Get property value"""
+        """Get property value
+
+        Available properties:
+          - name: Project name
+          - description: Project description
+          - author_name: Author name
+          - author_domain: URL to website
+          - author_maintainer: Email address of author
+          - version: Version number (major.minor.patch)
+
+        Args:
+            prop (string): Property name
+
+        Returns:
+            string: Property value
+
+        """
 
         # Helper function to get the parameter value of a cmake command
         def get_command_arg_value(signature, index):
@@ -83,7 +110,13 @@ class Project:
         return None
 
     def set_prop(self, prop, value):
-        """Set property value"""
+        """Set property value
+
+        Args:
+            prop (string): Property name
+            value (string): Property value
+
+        """
 
         # Helper function to set the parameter value of a cmake command
         def set_command_arg_value(signature, index, value):
@@ -120,7 +153,18 @@ class Project:
 
     def initialize(self, name=None, description=None, author_name=None, author_domain=None,
                          author_maintainer=None, version=None, dry=True):
-        """Initialize the cmake project"""
+        """Initialize the cmake project
+
+        Args:
+            name (string): Project name
+            description (string): Project description
+            author_name (string): Author name
+            author_domain (string): URL to website
+            author_maintainer (string): Email address of author
+            version (string): Version number (major.minor.patch)
+            dry (Boolean): True for dry-run (do not modify anything)
+
+        """
 
         # Create directory if necessary
         if not utils.ensure_dir(self.path):
@@ -183,7 +227,13 @@ class Project:
         return True
 
     def generate_library(self, name, dry=True):
-        """Generate library"""
+        """Generate library
+
+        Args:
+            name (string): Name of sub-project
+            dry (Boolean): True for dry-run (do not modify anything)
+
+        """
 
         # Check name
         if not name:
@@ -247,7 +297,13 @@ class Project:
         return True
 
     def generate_executable(self, name, dry=True):
-        """Generate executable"""
+        """Generate executable
+
+        Args:
+            name (string): Name of sub-project
+            dry (Boolean): True for dry-run (do not modify anything)
+
+        """
 
         # Check name
         if not name:
@@ -291,7 +347,14 @@ class Project:
         return True
 
     def remove_subproject(self, name, dry=True):
-        """Remove sub-project"""
+        """Remove sub-project
+
+
+        Args:
+            name (string): Name of sub-project
+            dry (Boolean): True for dry-run (do not modify anything)
+
+        """
 
         # Check name
         if not name:

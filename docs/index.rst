@@ -1,5 +1,5 @@
-Welcome to cm's documentation!
-==============================
+cm - CMake generator
+====================
 
 .. toctree::
    :maxdepth: 2
@@ -58,6 +58,12 @@ cml::project
 ============
 
 .. automodule:: cml.project
+   :members:
+
+cml::user_query
+===============
+
+.. automodule:: cml.user_query
    :members:
 
 cml::utils

@@ -8,7 +8,12 @@ class CMakeCommand(CMakeElement):
     """A section of a cmake file that represents a command"""
 
     def __init__(self, tokens):
-        """Constructor"""
+        """Constructor
+
+        Args:
+            tokens (list): List of tokens that belong to the command
+
+        """
         super().__init__(ElementType.COMMAND)
 
         # Initialize
@@ -20,7 +25,12 @@ class CMakeCommand(CMakeElement):
         self.parse()
 
     def write(self, stream):
-        """Print element to stream"""
+        """Print element to stream
+
+        Args:
+            stream (file object): Output stream to write to
+
+        """
 
         for (_, token) in self.tokens:
             stream.write(token)
@@ -36,7 +46,15 @@ class CMakeCommand(CMakeElement):
                     self.args.append(token)
 
     def signature(self, numargs = -1):
-        """Get command signature (name and arguments)"""
+        """Get command signature (name and arguments)
+
+        Args:
+            numargs (int): Number of arguments to include of the signature
+        
+        Returns:
+            list: List of name and arguments of the command
+
+        """
 
         # Get complete signature
         cmd = [ self.name ]
@@ -50,7 +68,15 @@ class CMakeCommand(CMakeElement):
             return cmd
 
     def get_arg(self, index):
-        """Get command argument"""
+        """Get command argument
+
+        Args:
+            index (int): Index of argument to get
+        
+        Returns:
+            (TokenType, token): Argument at the given index, or None
+
+        """
 
         # Return argument at given index or None
         if index >= 0 and index < len(self.args):
@@ -59,7 +85,15 @@ class CMakeCommand(CMakeElement):
             return None
 
     def get_arg_value(self, index):
-        """Get command argument value"""
+        """Get command argument value
+
+        Args:
+            index (int): Index of argument to get
+        
+        Returns:
+            string: Argument value at the given index, or None
+
+        """
 
         # Get argument at given index
         arg = self.get_arg(index)
@@ -71,7 +105,13 @@ class CMakeCommand(CMakeElement):
             return None
 
     def set_arg_value(self, index, value):
-        """Set command argument value"""
+        """Set command argument value
+
+        Args:
+            index (int): Index of argument to get
+            value (string) Argument value
+        
+        """
 
         # Get argument at given index
         arg = self.get_arg(index)

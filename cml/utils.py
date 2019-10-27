@@ -4,17 +4,32 @@ import shutil
 from os import path
 
 def script_dir():
-    """Get path to directory the script resides in."""
+    """Get path to directory the script resides in.
+
+    Returns:
+        string: Path to script directory
+
+    """
     return path.realpath(path.join(path.dirname(__file__), '../'))
 
 def data_dir():
-    """Get path to cm's data directory."""
+    """Get path to cm's data directory.
+
+    Returns:
+        string: Path to data directory
+
+    """
     return path.realpath(path.join(path.dirname(__file__), '../data/'))
 
 def dir_empty(path):
     """Check if directory is empty.
     
-    Returns True if directory exists and is empty, else False.
+    Args:
+        path (string): Path to directory
+
+    Returns:
+        Boolean: True if directory exists and is empty, else False
+
     """
     if os.path.exists(path) and os.path.isdir(path):
         return not os.listdir(path)
@@ -24,7 +39,13 @@ def dir_empty(path):
 def ensure_dir(path, dry=True):
     """Check if a directory exists and create it if necessary.
 
-    Returns True if directory exists afterwards, else False.
+    Args:
+        path (string): Path to directory
+        dry (Boolean): True for dry-run (do not modify anything)
+
+    Returns:
+        Boolean: True if directory exists afterwards, else False
+
     """
 
     # Ignore call on dry-run
@@ -40,7 +61,17 @@ def ensure_dir(path, dry=True):
     return os.path.isdir(path)
 
 def copy_template(src, dst, dry=True):
-    """Copy template from source to destination directory"""
+    """Copy template from source to destination directory
+
+    Args:
+        src (string): Path to source directory
+        dst (string): Path to destination directory
+        dry (Boolean): True for dry-run (do not modify anything)
+
+    Returns:
+        Boolean: True if template was copied successfully, else False
+
+    """
 
     # Ensure that destination directory exists
     if not ensure_dir(dst, dry):
@@ -74,7 +105,16 @@ def copy_template(src, dst, dry=True):
     return True
 
 def remove_subdirectory(path, dry=True):
-    """Remove sub-directory recursively"""
+    """Remove sub-directory recursively
+
+    Args:
+        path (string): Path to directory
+        dry (Boolean): True for dry-run (do not modify anything)
+
+    Returns:
+        Boolean: True if directory was removed, else False
+
+    """
 
     # Ensure that destination directory exists
     if not os.path.isdir(path):
@@ -108,7 +148,16 @@ def remove_subdirectory(path, dry=True):
     return True
 
 def replace_in_file(path, variables):
-    """Replace variables in a file"""
+    """Replace variables in a file
+
+    Args:
+        path (string): Path to file
+        variable (list): List of (key, value)
+
+    Returns:
+        Boolean: True if file was processed without error, else False
+
+    """
 
     try:
         # Read file content

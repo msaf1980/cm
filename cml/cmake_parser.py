@@ -14,7 +14,14 @@ class CMakeParser:
         """Default Constructor"""
 
     def load(self, path):
-        """Load cmake file"""
+        """Load cmake file
+
+        Args:
+            path (string): Path to cmake file
+
+        Returns:
+            CMakeFile: Representation of cmake file, or None
+        """
 
         # Tokenize cmake file
         tokens = self.tokenize(path)
@@ -30,7 +37,15 @@ class CMakeParser:
         return cmake_file
 
     def tokenize(self, path):
-        """Parse cmake file into list of tokens"""
+        """Parse cmake file into list of tokens
+
+        Args:
+            path (string): Path to cmake file
+
+        Returns:
+            list: List of tokens (TokenType, string)
+
+        """
 
         # Check if file exists
         if not os.path.isfile(path):
@@ -138,7 +153,16 @@ class CMakeParser:
         return tokens
 
     def parse_structure(self, path, tokens):
-        """Parse structure of cmake file after loading"""
+        """Parse structure of cmake file after loading
+
+        Args:
+            path (string): Path to cmake file
+            tokens (list): List of tokens (TokenType, string)
+
+        Returns:
+            CMakeFile: Representation of cmake file, or None
+
+        """
 
         # Create object
         cmake_file = CMakeFile(path)

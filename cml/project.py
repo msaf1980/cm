@@ -2,16 +2,18 @@ import os
 
 from . import utils
 from .cmake_parser import CMakeParser
+from .user_query import UserQuery
 
 
 class Project:
     """Class that represents a cmake project on the disk"""
 
-    def __init__(self, path=None):
+    def __init__(self, path=None, query=None):
         """Default Constructor"""
 
         # Initialize data
         self.path = path or '.' # Path to project directory
+        self.query = query or UserQuery()
         self.cmake_file = None  # The main cmake file
 
         # Scan project directory
@@ -133,8 +135,7 @@ class Project:
     def test_cmd(self):
         """Execute test command (for development)"""
 
-        # Rename project to 'testproject'
-        self.set_prop('project_name', 'testproject')
-
-        # Save cmake file
-        self.cmake_file.save()
+        # Ask the user some stupid questions
+        print(self.query.ask('Who are you?', 'John Doe'))
+        print(self.query.confirm('Are you sure?', True))
+        print(self.query.confirm('Are you certain?', False))

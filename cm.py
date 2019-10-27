@@ -4,6 +4,7 @@ import argparse
 from cml import utils
 from cml import Project
 
+
 # Create argument parser
 parser = argparse.ArgumentParser(description='Modern CMake project generator.')
 subparsers = parser.add_subparsers(title='subcommands', dest='command')

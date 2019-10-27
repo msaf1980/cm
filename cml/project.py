@@ -14,7 +14,7 @@ class Project:
 
         # Initialize data
         self.path = path or '.' # Path to project directory
-        self.query = query or UserQuery()
+        self.query = query or UserQuery() # Interface to query the user
         self.main_cmake = None  # The main cmake file
         self.source_cmake = None  # The cmake file in source/
         self.project_name = '' # The name of the project

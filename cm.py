@@ -25,6 +25,11 @@ sub_parser.add_argument('value', help='Property value')
 sub_parser = subparsers.add_parser('init', aliases=['i'], help='Initialize cmake project')
 sub_parser.add_argument('-d', '--dry-run', help='Do not modify project on disk', action='store_true')
 sub_parser.add_argument('--name', help='Project name')
+sub_parser.add_argument('--description', help='Project description')
+sub_parser.add_argument('--author-name', help='Author name')
+sub_parser.add_argument('--author-domain', help='Author domain')
+sub_parser.add_argument('--author-maintainer', help='Author maintainer')
+sub_parser.add_argument('--version', help='Version number')
 
 # Command 'generate'
 sub_parser = subparsers.add_parser('generate', aliases=['g'], help='Generate sub-project')
@@ -51,7 +56,9 @@ if args.command == 'get':
 if args.command == 'set':
     project.set_prop(args.name, args.value)
 elif args.command == 'init' or args.command == 'i':
-    project.initialize(dry=args.dry_run)
+    project.initialize(name=args.name, description=args.description, author_name=args.author_name,
+                       author_domain=args.author_domain, author_maintainer=args.author_maintainer,
+                       version=args.version, dry=args.dry_run)
 elif args.command == 'generate' or args.command == 'g':
     print('Generate project {} ({})'.format(args.name, args.type))
 elif args.command == 'test':

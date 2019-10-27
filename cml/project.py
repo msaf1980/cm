@@ -125,7 +125,7 @@ class Project:
 
         # Ask for missing information
         if name == None:
-            name = self.query.ask('Project name', 'project')
+            name = self.query.ask('Project name', os.path.basename(os.path.realpath(self.path)))
         if description == None:
             description = self.query.ask('Project description', 'My new project')
         if author_name == None:

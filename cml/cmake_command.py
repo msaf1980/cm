@@ -52,14 +52,29 @@ class CMakeCommand(CMakeElement):
     def get_arg(self, index):
         """Get command argument"""
 
+        # Return argument at given index or None
         if index >= 0 and index < len(self.args):
             return self.args[index]
         else:
             return None
 
-    def set_arg(self, index, value):
-        """Set command argument"""
+    def get_arg_value(self, index):
+        """Get command argument value"""
 
+        # Get argument at given index
         arg = self.get_arg(index)
         if arg:
+            # Return value
+            return arg[1]
+        else:
+            # Does not exist
+            return None
+
+    def set_arg_value(self, index, value):
+        """Set command argument value"""
+
+        # Get argument at given index
+        arg = self.get_arg(index)
+        if arg:
+            # Set value
             arg[1] = value

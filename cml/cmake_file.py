@@ -1,6 +1,9 @@
 import os
 
-from . import ElementType, TokenType, CMakeCommand, CMakeComment, CMakeWhitespace
+from .cmake import ElementType, TokenType
+from .cmake_command import CMakeCommand
+from .cmake_comment import CMakeComment
+from .cmake_whitespace import CMakeWhitespace
 
 
 class CMakeFile:
@@ -62,7 +65,7 @@ class CMakeFile:
 
         # Set argument on those commands
         for cmd in cmds:
-            cmd.set_arg(index, value)
+            cmd.set_arg_value(index, value)
 
     def add_command(self, cmd, before = None, after = None):
         """Add new command"""
